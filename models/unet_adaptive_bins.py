@@ -39,8 +39,7 @@ class DecoderBN(nn.Module):
         # self.act_out = nn.Softmax(dim=1) if output_activation == 'softmax' else nn.Identity()
 
     def forward(self, features):
-        x_block0, x_block1, x_block2, x_block3, x_block4 = features[4], features[5], features[6], features[8], features[
-            11]
+        x_block0, x_block1, x_block2, x_block3, x_block4 = features[4], features[5], features[6], features[8], features[11]
 
         x_d0 = self.conv2(x_block4)
 

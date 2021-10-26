@@ -120,7 +120,7 @@ def train(model, args, epochs=10, experiment_name="DeepLab", lr=0.0001, root="."
     run_id = f"{dt.now().strftime('%d-%h_%H-%M')}-nodebs{args.bs}-tep{epochs}-lr{lr}-wd{args.wd}-{uuid.uuid4()}"
     name = f"{experiment_name}_{run_id}"
     should_write = ((not args.distributed) or args.rank == 0)
-    should_log = should_write and logging
+    should_log = should_write and logging and False
     if should_log:
         tags = args.tags.split(',') if args.tags != '' else None
         if args.dataset != 'nyu':
@@ -314,7 +314,7 @@ if __name__ == '__main__':
                         choices=['linear', 'softmax', 'sigmoid'])
     parser.add_argument("--same-lr", '--same_lr', default=False, action="store_true",
                         help="Use same LR for all param groups")
-    parser.add_argument("--distributed", default=True, action="store_true", help="Use DDP if set")
+    parser.add_argument("--distributed", default=False, action="store_true", help="Use DDP if set")
     parser.add_argument("--root", default=".", type=str,
                         help="Root folder to save data in")
     parser.add_argument("--resume", default='', type=str, help="Resume from checkpoint")
@@ -323,15 +323,15 @@ if __name__ == '__main__':
     parser.add_argument("--tags", default='sweep', type=str, help="Wandb tags")
 
     parser.add_argument("--workers", default=11, type=int, help="Number of workers for data loading")
-    parser.add_argument("--dataset", default='nyu', type=str, help="Dataset to train on")
+    parser.add_argument("--dataset", default='kitti', type=str, help="Dataset to train on")
 
-    parser.add_argument("--data_path", default='../dataset/nyu/sync/', type=str,
+    parser.add_argument("--data_path", default='/mnt', type=str,
                         help="path to dataset")
-    parser.add_argument("--gt_path", default='../dataset/nyu/sync/', type=str,
+    parser.add_argument("--gt_path", default='/mnt/gt', type=str,
                         help="path to dataset")
 
     parser.add_argument('--filenames_file',
-                        default="./train_test_inputs/nyudepthv2_train_files_with_gt.txt",
+                        default="./train_test_inputs/kitti_eigen_train_files_with_gt.txt",
                         type=str, help='path to the filenames text file')
 
     parser.add_argument('--input_height', type=int, help='input height', default=416)

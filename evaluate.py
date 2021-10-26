@@ -161,7 +161,7 @@ if __name__ == '__main__':
     parser.add_argument("--root", default=".", type=str,
                         help="Root folder to save data in")
 
-    parser.add_argument("--dataset", default='nyu', type=str, help="Dataset to train on")
+    parser.add_argument("--dataset", default='kitti', type=str, help="Dataset to train on")
 
     parser.add_argument("--data_path", default='../dataset/nyu/sync/', type=str,
                         help="path to dataset")
@@ -210,6 +210,7 @@ if __name__ == '__main__':
     model = UnetAdaptiveBins.build(n_bins=args.n_bins, min_val=args.min_depth, max_val=args.max_depth,
                                    norm='linear').to(device)
     model = model_io.load_checkpoint(args.checkpoint_path, model)[0]
+    #model = model_io.load_weights(model, 'AdaBins_kitti.pt', 'pretrained')
     model = model.eval()
 
     eval(model, test, args, gpus=[device])
