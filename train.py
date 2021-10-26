@@ -348,12 +348,12 @@ if __name__ == '__main__':
                         action='store_true')
 
     parser.add_argument('--data_path_eval',
-                        default="../dataset/nyu/official_splits/test/",
+                        default="/mnt",
                         type=str, help='path to the data for online evaluation')
-    parser.add_argument('--gt_path_eval', default="../dataset/nyu/official_splits/test/",
+    parser.add_argument('--gt_path_eval', default="/mnt/gt",
                         type=str, help='path to the groundtruth data for online evaluation')
     parser.add_argument('--filenames_file_eval',
-                        default="./train_test_inputs/nyudepthv2_test_files_with_gt.txt",
+                        default="./train_test_inputs/kitti_eigen_train_files_with_gt.txt",
                         type=str, help='path to the filenames text file for online evaluation')
 
     parser.add_argument('--min_depth_eval', type=float, help='minimum depth for evaluation', default=1e-3)
