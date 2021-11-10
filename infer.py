@@ -7,6 +7,7 @@ import torch.nn as nn
 from PIL import Image
 from torchvision import transforms
 from tqdm import tqdm
+import cv2
 
 import model_io
 import utils
@@ -153,10 +154,29 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     from time import time
 
-    img = Image.open("test_imgs/2011_09_26_drive_0002_sync_image_0000000005_image_02b.jpg")
-    start = time()
+    dpi = 96
+
+    fig = plt.figure(figsize=(1280/dpi, 384/dpi), dpi=dpi, frameon=False)
+    ax = plt.Axes(fig, [0., 0., 1., 1.])
+    ax.set_axis_off()
+    fig.add_axes(ax)
+
+    imgs = [file for file in os.listdir("D:/8th_Avenue_Stereo/RGB/R/") if file.endswith(".jpeg")]
+    #img = Image.open("sim/img_{:06d}.jpeg".format(1))
     inferHelper = InferenceHelper(dataset='kitti')
-    centers, pred = inferHelper.predict_pil(img)
+    start = time()
+    for i in imgs:
+        img = Image.open("D:/8th_Avenue_Stereo/RGB/R/"+i)
+        centers, pred = inferHelper.predict_pil(img)
+        #print(pred.shape)
+        #print(np.max(pred))
+        cv2.imwrite("sim1/"+i, cv2.cvtColor(pred.squeeze(), cv2.COLOR_RGB2BGR))
+        ##plt.imshow(pred.squeeze(), cmap='magma_r')
+        #ax.imshow(pred.squeeze(),  cmap='magma_r', aspect='auto')
+        ##plt.savefig("sim/_"+i)
+        ##plt.show()
+        #fig.savefig("sim/_"+i, dpi=dpi)
     print(f"took :{time() - start}s")
-    plt.imshow(pred.squeeze(), cmap='magma_r')
-    plt.show()
+    utils.generate_video_from_imgs("sim", ".jpeg")
+
+    

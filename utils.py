@@ -2,6 +2,8 @@ import base64
 import math
 import re
 from io import BytesIO
+import os
+import cv2
 
 import matplotlib.cm
 import numpy as np
@@ -138,3 +140,28 @@ class PointCloudHelper():
         return np.dstack((self.xx * z, self.yy * z, z)).reshape((length, 3))
 
 #####################################################################################################
+
+def generate_video_from_imgs(path, type=".png"):
+    folder = os.path.join(os.getcwd(),path)
+    print(folder)
+    imgs = [file for file in os.listdir(folder) if file.endswith(type)]
+    #imgs = [int(x.split('.')[0]) for x in imgs]
+    #imgs.sort()
+    #imgs = [str(i)+type for i in imgs]
+
+    print(imgs)
+    orig = cv2.imread(os.path.join(folder, imgs[0]))
+    height, width, layers = orig.shape
+    size = (width,height)
+
+    fourcc = cv2.VideoWriter_fourcc(*'H264')
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out = cv2.VideoWriter(os.path.join(folder, 'video1.mp4'),fourcc, 30, size)
+
+    for i in imgs:
+        img = cv2.imread(os.path.join(folder, i))
+        if img is None:
+            break
+        out.write(img)
+    
+    out.release()
