@@ -1,0 +1,12 @@
+wandb
+pip install pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py38_cu102_pyt190/download.html
+
+
+CONDA:
+conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
+##X conda install pytorch3d -c pytorch3d
+pip install wandb
+pip install tqdm
+pip install matplotlib
+pip install scipy
+pip install "git+https://github.com/facebookresearch/pytorch3d.git"
