@@ -77,7 +77,7 @@ class InferenceHelper:
             pretrained_path = "./pretrained/AdaBins_kitti.pt"
         elif dataset == 'kitti':
             self.min_depth = 1e-3
-            self.max_depth = 80
+            self.max_depth = 1000
             self.saving_factor = 256
             model = UnetAdaptiveBins.build(n_bins=256, min_val=self.min_depth, max_val=self.max_depth)
             pretrained_path = "./pretrained/AdaBins_kitti.pt"
@@ -147,7 +147,13 @@ class InferenceHelper:
             basename = os.path.basename(f).split('.')[0]
             save_path = os.path.join(out_dir, basename + ".png")
 
-            Image.fromarray(final).save(save_path)
+            #im = Image.fromarray(final).save(save_path)
+            final = np.moveaxis(final[0], 0, -1)
+            #im = cv2.imread(f)
+            #print(im.shape)
+            #print(final[0].shape)
+            #input()
+            cv2.imwrite(save_path, final)
 
 
 if __name__ == '__main__':
@@ -162,21 +168,31 @@ if __name__ == '__main__':
     fig.add_axes(ax)
 
     imgs = [file for file in os.listdir("D:/8th_Avenue_Stereo/RGB/R/") if file.endswith(".jpeg")]
+    imgs = [file for file in os.listdir("C:/Users/Ibrahim/Pictures") if file.endswith(".jpeg")]
     #img = Image.open("sim/img_{:06d}.jpeg".format(1))
     inferHelper = InferenceHelper(dataset='kitti')
+    tt = 0
+    iter = 0
     start = time()
+    inferHelper.predict_dir("D:/8th_Avenue_Stereo/RGB/R/", "sim2/")
+    print(f"took :{time()-start}s")
+    exit()
     for i in imgs:
-        img = Image.open("D:/8th_Avenue_Stereo/RGB/R/"+i)
+        #img = Image.open("D:/8th_Avenue_Stereo/RGB/R/"+i)
+        img = Image.open("C:/Users/Ibrahim/Pictures/"+i)
+        start = time()
         centers, pred = inferHelper.predict_pil(img)
+        tt += time() - start
         #print(pred.shape)
         #print(np.max(pred))
-        cv2.imwrite("sim1/"+i, cv2.cvtColor(pred.squeeze(), cv2.COLOR_RGB2BGR))
-        ##plt.imshow(pred.squeeze(), cmap='magma_r')
+        ###  cv2.imwrite("sim2/"+i.split(".")[0]+".png", cv2.cvtColor(pred.squeeze(), cv2.COLOR_RGB2BGR))
+        plt.imshow(pred.squeeze(), cmap='magma_r')
         #ax.imshow(pred.squeeze(),  cmap='magma_r', aspect='auto')
         ##plt.savefig("sim/_"+i)
         ##plt.show()
-        #fig.savefig("sim/_"+i, dpi=dpi)
-    print(f"took :{time() - start}s")
-    utils.generate_video_from_imgs("sim", ".jpeg")
+        fig.savefig("sim2/_"+i, dpi=dpi)
+        iter += 1
+    print(f"took :{tt*1000.0/iter}s")
+    #utils.generate_video_from_imgs("sim", ".jpeg")
 
     
